@@ -15,7 +15,8 @@ class _HomePageState extends State<HomePage> {
   List notes = [];
   Future getData() async {
     SqlDb sqlDb = SqlDb();
-    List<Map> data = await sqlDb.readData(" SELECT * FROM 'note' ");
+    //List<Map> data = await sqlDb.readData(" SELECT * FROM 'note' ");
+    List<Map> data = await sqlDb.read('note');
     notes.addAll(data);
     _isLoading = true;
     if (mounted) {

@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SqlDb {
   static Database? _db;
@@ -36,6 +37,10 @@ CREATE TABLE "note" (
     debugPrint('on create ==============================>');
   }
 
+  FutureOr<void> _onUpgrade(Database db, int oldVersion, int newVersion) {}
+  //===============================================================
+  //! Read - insert - update -delete - By raw
+  // ==============================================================
 //Read data
   readData(String sql) async {
     Database? myDb = await db;
@@ -64,11 +69,41 @@ CREATE TABLE "note" (
     return response;
   }
 
-  FutureOr<void> _onUpgrade(Database db, int oldVersion, int newVersion) {}
-
+// Delete DataBase
   Future deleteDataBase() async {
     String dBPath = await getDatabasesPath();
     String path = join(dBPath, 'notes.db');
     await deleteDatabase(path);
+  }
+
+  //===============================================================
+  //! Read - insert - update -delete - By query
+  // ==============================================================
+  read(String sql) async {
+    Database? myDb = await db;
+    List<Map> response = await myDb!.query(sql);
+    return response;
+  }
+
+  //Insert data
+  Future<int> insert(String table, Map<String, Object?> values) async {
+    Database? myDb = await db;
+    int response = await myDb!.insert(table, values);
+    return response;
+  }
+
+  // Update data
+  Future<int> update(
+      String table, Map<String, Object?> values, String? where) async {
+    Database? myDb = await db;
+    int response = await myDb!.update(table, values, where: where);
+    return response;
+  }
+
+  // Delete data
+  Future<int> delete(String table, String? where) async {
+    Database? myDb = await db;
+    int response = await myDb!.delete(table, where: where);
+    return response;
   }
 }
